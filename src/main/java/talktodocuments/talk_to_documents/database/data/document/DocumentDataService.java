@@ -12,7 +12,7 @@ public class DocumentDataService {
         this.documentDataRepository = documentDataRepository;
     }
 
-    public List<DocumentData> getAllDocumentData() {
-        return documentDataRepository.findAll();
+    public List<DocumentData> getAllDocumentDataForUserId(String userId) {
+        return documentDataRepository.findAllByUserId(userId);
     }
 }

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Back</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        body {
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(-45deg, #dff6f0, #b7e4c7, #d8f3dc, #d9edff);
+            background-size: 400% 400%;
+            animation: bgMove 15s ease infinite;
+            position: relative;
+        }
+
+        /* Animated Background */
+
+        @keyframes bgMove {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Floating Clouds */
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, .5);
+            border-radius: 100px;
+            filter: blur(2px);
+            animation: cloudMove linear infinite;
+        }
+
+        .cloud:before,
+        .cloud:after {
+            content: "";
+            position: absolute;
+            background: inherit;
+            border-radius: 50%;
+        }
+
+        .cloud1 {
+            width: 170px;
+            height: 55px;
+            top: 12%;
+            left: -200px;
+            animation-duration: 38s;
+        }
+
+        .cloud1:before {
+            width: 70px;
+            height: 70px;
+            left: 20px;
+            top: -25px;
+        }
+
+        .cloud1:after {
+            width: 90px;
+            height: 90px;
+            right: 20px;
+            top: -40px;
+        }
+
+        .cloud2 {
+            width: 220px;
+            height: 65px;
+            top: 30%;
+            left: -250px;
+            animation-duration: 55s;
+            animation-delay: 8s;
+        }
+
+        .cloud2:before {
+            width: 90px;
+            height: 90px;
+            left: 40px;
+            top: -30px;
+        }
+
+        .cloud2:after {
+            width: 100px;
+            height: 100px;
+            right: 20px;
+            top: -35px;
+        }
+
+        @keyframes cloudMove {
+            from {
+                transform: translateX(0);
+            }
+            to {
+                transform: translateX(calc(100vw + 500px));
+            }
+        }
+
+        /* Glass Card */
+
+        .container {
+            width: 360px;
+            backdrop-filter: blur(18px);
+            background: rgba(255, 255, 255, .18);
+            border: 1px solid rgba(255, 255, 255, .35);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, .12);
+            border-radius: 25px;
+            padding: 40px;
+            z-index: 5;
+        }
+
+        .container h2 {
+            text-align: center;
+            color: #235347;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .message-box {
+            position: relative;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .input-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 15px 45px 15px 15px;
+            border: none;
+            outline: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .7);
+            font-size: 15px;
+        }
+
+        .toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: #5bbfa8;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: .35s;
+        }
+
+        button:hover {
+            background: #46aa93;
+            transform: translateY(-2px);
+        }
+
+        .bottom {
+            margin-top: 18px;
+            text-align: center;
+            color: #356859;
+            font-size: 14px;
+        }
+
+        .bottom a {
+            color: #235347;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Sparkles */
+
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: white;
+            animation: float 8s linear infinite;
+            opacity: .7;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(120vh) scale(0);
+            }
+            to {
+                transform: translateY(-120vh) scale(1.5);
+            }
+        }
+
+        /* Flying Bird */
+
+        .bird {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            z-index: 10;
+            pointer-events: none;
+            animation: flyAround 24s linear infinite,
+            bob 1.4s ease-in-out infinite;
+        }
+
+        /* Wing animation */
+
+        .bird svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .leftWing,
+        .rightWing {
+            transform-origin: center;
+            animation: flap .22s ease-in-out infinite alternate;
+        }
+
+        @keyframes flap {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(18deg);
+            }
+        }
+
+        @keyframes bob {
+            0%, 100% {
+                margin-top: -5px;
+            }
+            50% {
+                margin-top: 8px;
+            }
+        }
+
+        /* Complete tour around the page */
+
+        @keyframes flyAround {
+
+            0% {
+                left: -80px;
+                top: 20%;
+                transform: scale(.9) rotate(5deg);
+            }
+
+            18% {
+                left: 35%;
+                top: 8%;
+                transform: scale(1) rotate(8deg);
+            }
+
+            35% {
+                left: 85%;
+                top: 20%;
+                transform: scale(.95);
+            }
+
+            50% {
+                left: 70%;
+                top: 72%;
+                transform: scale(1.05);
+            }
+
+            68% {
+                left: 25%;
+                top: 82%;
+                transform: scale(.95) rotate(-5deg);
+            }
+
+            82% {
+                left: 10%;
+                top: 45%;
+                transform: scale(.9);
+            }
+
+            100% {
+                left: -90px;
+                top: 20%;
+                transform: scale(.9);
+            }
+
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="cloud cloud1"></div>
+<div class="cloud cloud2"></div>
+
+<!-- Flying Bird -->
+
+<div class="bird">
+
+    <svg viewBox="0 0 120 120">
+
+        <g fill="none" stroke="#333" stroke-width="4" stroke-linecap="round">
+
+            <path class="leftWing" d="M60 60 C40 30 15 25 5 45"/>
+
+            <path class="rightWing" d="M60 60 C80 30 105 25 115 45"/>
+
+            <path d="M55 60 Q60 68 65 60"/>
+
+        </g>
+
+    </svg>
+
+</div>
+
+<div class="container">
+
+    <h2>Welcome Back</h2>
+
+    <form id="loginForm">
+
+        <div class="message-box">
+            <p id="message"></p>
+        </div>
+        <div class="input-box">
+            <input type="email" id="email" name="email" placeholder="Email" required>
+        </div>
+
+        <div class="input-box">
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <span class="toggle" id="show-hide-password" onclick="togglePassword()">👁</span>
+        </div>
+        <button type="submit">Login</button>
+
+    </form>
+</div>
+
+<script>
+
+    // Hide message
+
+    let messageField = document.getElementById("message");
+
+    document.querySelectorAll("input").forEach(field => {
+        field.addEventListener("input", () => messageField.textContent = "");
+    });
+
+    // Show / Hide password
+
+    function togglePassword() {
+
+        const pass = document.getElementById("password");
+
+        pass.type = pass.type === "password" ? "text" : "password";
+
+    }
+
+    // Generate sparkles
+
+    for (let i = 0; i < 40; i++) {
+
+        const s = document.createElement("div");
+
+        s.className = "sparkle";
+
+        s.style.left = Math.random() * 100 + "vw";
+
+        s.style.animationDuration = 5 + Math.random() * 8 + "s";
+
+        s.style.animationDelay = Math.random() * 8 + "s";
+
+        s.style.opacity = Math.random();
+
+        document.body.appendChild(s);
+
+    }
+
+    // Handle POST request
+
+    document.getElementById("loginForm").addEventListener("submit", async function (event) {
+        event.preventDefault(); // Prevent form from submitting normally
+
+        // Read values from the HTML fields
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+            const response = await fetch("./login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({
+                    email: email,
+                    password: password
+                })
+            });
+
+            let messageField = document.getElementById("message");
+
+            // Wait for the response
+            if (response.status === 200) {
+                messageField.textContent = "Login Successful.";
+                messageField.style.color = "green";
+            } else {
+                messageField.textContent = "Invalid email or password.";
+                messageField.style.color = "red";
+            }
+        } catch (error) {
+            document.getElementById("message").textContent = "Unknown error occurred.";
+        }
+    });
+
+</script>
+
+</body>
+</html>

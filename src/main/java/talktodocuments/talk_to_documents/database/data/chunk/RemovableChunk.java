@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "removable_chunk")
 @Getter
@@ -14,8 +16,14 @@ public class RemovableChunk {
     private long id;
     @Column(unique = true, nullable = false)
     private String chunkId;
+    @Column(nullable = false)
+    private LocalDateTime registerDateAndTime;
 
-    RemovableChunk(String chunkId) {
+    public RemovableChunk() {
+    }
+
+    public RemovableChunk(String chunkId, LocalDateTime registerDateAndTime) {
         this.chunkId = chunkId;
+        this.registerDateAndTime = registerDateAndTime;
     }
 }

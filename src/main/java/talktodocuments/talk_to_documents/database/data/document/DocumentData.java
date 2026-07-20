@@ -14,19 +14,25 @@ public class DocumentData {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @Column(nullable = false)
+    private String userId;
     @Column(nullable = false, unique = true)
     private String documentId;
     @Column(nullable = false)
     private String documentName;
     @Column(nullable = false)
-    private String path;
+    private String section;
     @Column(nullable = false)
     private LocalDateTime creationDateTime;
 
-    public DocumentData(String documentId, String documentName, String path) {
+    public DocumentData() {
+    }
+
+    public DocumentData(String userId, String documentId, String documentName, String section) {
+        this.userId = userId;
         this.documentId = documentId;
         this.documentName = documentName;
-        this.path = path;
+        this.section = section;
         this.creationDateTime = LocalDateTime.now();
     }
 }

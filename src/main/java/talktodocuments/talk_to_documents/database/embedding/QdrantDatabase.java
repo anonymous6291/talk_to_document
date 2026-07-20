@@ -52,7 +52,7 @@ public class QdrantDatabase {
         return httpResponse.statusCode() == 200;
     }
 
-    public List<Chunk> searchInAllDocumentIds(String collectionName, float[] vector, String payloadFieldName, String... matchValues) throws Exception {
+    public List<Chunk> searchInAll(String collectionName, float[] vector, String payloadFieldName, String... matchValues) throws Exception {
         List<KeyMatchData> keyMatchData = new LinkedList<>();
         for (String documentId : matchValues) {
             keyMatchData.add(new KeyMatchData(payloadFieldName, new MatchPayloadData(documentId)));
@@ -60,7 +60,7 @@ public class QdrantDatabase {
         ShouldQueryData shouldQueryData = new ShouldQueryData(vector, QUERY_RESPONSE_LIMIT, QUERY_RESPONSE_WITH_PAYLOAD, QUERY_RESPONSE_WITH_VECTOR, keyMatchData);
         String shouldQueryDataString = jsonParser.writeValueAsString(shouldQueryData);
         String url = BASE_URL + collectionName + QUERY_POINT_URL_EXTENSION;
-        HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(url)).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(url)).build();
+        HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(url)).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(shouldQueryDataString)).build();
         HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         QueryResponse queryResponse = jsonParser.readValue(httpResponse.body(), QueryResponse.class);
         return queryResponse.result();

@@ -17,6 +17,9 @@ public class DocumentChunk {
     @Column(nullable = false, unique = true)
     private String chunkId;
 
+    public DocumentChunk() {
+    }
+
     public DocumentChunk(String documentId, String chunkId) {
         this.documentId = documentId;
         this.chunkId = chunkId;

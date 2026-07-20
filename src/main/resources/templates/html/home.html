@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Assistant</title>
+
+    <link rel="stylesheet" href="/home/style.css">
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+            <h2>📚 Documents</h2>
+            <p>Select knowledge sources</p>
+        </div>
+
+        <div id="documents" class="documents">
+            <div class="loading-docs">
+                Loading documents...
+            </div>
+        </div>
+
+    </aside>
+
+
+    <main class="chat-area">
+
+        <div class="chat-header">
+            <h1>🌿 RAG Assistant</h1>
+            <span>Your calm AI workspace</span>
+        </div>
+
+        <div id="chatMessages" class="chat-messages"></div>
+
+        <div class="chat-input">
+
+            <textarea
+                    id="queryInput"
+                    placeholder="Ask anything..."
+                    rows="1"></textarea>
+
+            <button id="sendBtn">
+                Send
+            </button>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="/home/script.js"></script>
+
+</body>
+</html>
