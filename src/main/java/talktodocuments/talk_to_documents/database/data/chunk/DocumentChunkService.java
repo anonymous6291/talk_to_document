@@ -20,6 +20,7 @@ public class DocumentChunkService {
         }
     }
 
+    @Transactional
     public void deleteAllChunks(String documentId) {
         documentChunkRepository.deleteAllByDocumentId(documentId);
     }

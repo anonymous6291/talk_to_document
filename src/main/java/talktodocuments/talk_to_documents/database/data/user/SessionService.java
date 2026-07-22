@@ -1,5 +1,6 @@
 package talktodocuments.talk_to_documents.database.data.user;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -15,6 +16,7 @@ public class SessionService {
         this.sessionRepository = sessionRepository;
     }
 
+    @Transactional
     public Session createNewSession(String email) {
         Instant expiry = Instant.now().plus(EXPIRY);
         Session session = new Session(email, expiry);
@@ -37,10 +39,12 @@ public class SessionService {
         return false;
     }
 
+    @Transactional
     public void deleteSession(String email, String sessionId) {
         sessionRepository.deleteByEmailAndSessionId(email, sessionId);
     }
 
+    @Transactional
     public void deleteAllSessions(String email) {
         sessionRepository.deleteAllByEmail(email);
     }

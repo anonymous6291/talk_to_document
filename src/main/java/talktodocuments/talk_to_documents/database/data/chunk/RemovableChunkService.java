@@ -1,5 +1,6 @@
 package talktodocuments.talk_to_documents.database.data.chunk;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,10 +18,12 @@ public class RemovableChunkService {
         return removableChunkRepository.findAll();
     }
 
+    @Transactional
     public void addRemovableChunk(String chunkId) {
         removableChunkRepository.save(new RemovableChunk(chunkId, LocalDateTime.now()));
     }
 
+    @Transactional
     public void deleteRemovableChunk(String chunkId) {
         removableChunkRepository.deleteByChunkId(chunkId);
     }

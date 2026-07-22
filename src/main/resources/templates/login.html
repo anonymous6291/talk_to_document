@@ -420,6 +420,11 @@
             if (response.status === 200) {
                 messageField.textContent = "Login Successful.";
                 messageField.style.color = "green";
+                setTimeout(() => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    }
+                }, 1500);
             } else {
                 messageField.textContent = "Invalid email or password.";
                 messageField.style.color = "red";

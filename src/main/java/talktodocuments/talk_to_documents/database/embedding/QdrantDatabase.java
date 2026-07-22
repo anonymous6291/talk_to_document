@@ -2,6 +2,7 @@ package talktodocuments.talk_to_documents.database.embedding;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ public class QdrantDatabase {
     private static final boolean QUERY_RESPONSE_WITH_VECTOR = false;
     private static final boolean QUERY_RESPONSE_WITH_PAYLOAD = true;
     private static final String SIMILARITY_MATCHING_METHOD = "Cosine";
-    private static final String BASE_URL = "http://127.0.0.1:6334/collections/";
+    private static final String BASE_URL = "http://127.0.0.1:6333/collections/";
     private static final String ADD_COLLECTION_URL_EXTENSION = "";
     private static final String ADD_POINT_URL_EXTENSION = "/points";
     private static final String QUERY_POINT_URL_EXTENSION = "/points/query";
@@ -32,6 +33,21 @@ public class QdrantDatabase {
         httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build();
         jsonParser = new ObjectMapper();
         jsonParser.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        jsonParser.enable(SerializationFeature.INDENT_OUTPUT);
+    }
+
+    public List<String> getAllCollections() throws Exception {
+        HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(BASE_URL)).GET().build();
+        HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        String responseString = httpResponse.body();
+        return jsonParser.readValue(responseString, QueryResponse.class).result().collections().stream().map(CollectionName::name).toList();
+    }
+
+    public String getCollectionInfoAsJson(String collectionName) throws Exception {
+        URI uri = URI.create(BASE_URL + collectionName);
+        HttpRequest httpRequest = HttpRequest.newBuilder(uri).GET().build();
+        HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        return httpResponse.body();
     }
 
     public boolean addCollection(String collectionName) throws Exception {
@@ -48,11 +64,14 @@ public class QdrantDatabase {
         String chunkDataString = jsonParser.writeValueAsString(chunkData);
         String url = BASE_URL + collectionName + ADD_POINT_URL_EXTENSION;
         HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(url)).header("Content-Type", "application/json").PUT(HttpRequest.BodyPublishers.ofString(chunkDataString)).build();
-        HttpResponse<Void> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.discarding());
+        HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        IO.println(httpResponse.body());
+        IO.println(httpResponse);
+        IO.println(httpResponse.statusCode());
         return httpResponse.statusCode() == 200;
     }
 
-    public List<Chunk> searchInAll(String collectionName, float[] vector, String payloadFieldName, String... matchValues) throws Exception {
+    public List<Chunk> searchInAll(String collectionName, float[] vector, String payloadFieldName, List<String> matchValues) throws Exception {
         List<KeyMatchData> keyMatchData = new LinkedList<>();
         for (String documentId : matchValues) {
             keyMatchData.add(new KeyMatchData(payloadFieldName, new MatchPayloadData(documentId)));
@@ -62,8 +81,9 @@ public class QdrantDatabase {
         String url = BASE_URL + collectionName + QUERY_POINT_URL_EXTENSION;
         HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(url)).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(shouldQueryDataString)).build();
         HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        QueryResponse queryResponse = jsonParser.readValue(httpResponse.body(), QueryResponse.class);
-        return queryResponse.result();
+        IO.println(httpResponse.body());
+        QueryResponseResult queryResponseResult = jsonParser.readValue(httpResponse.body(), QueryResponse.class).result();
+        return queryResponseResult.points();
     }
 
     public boolean deleteChunks(String collectionName, List<String> chunkIds) throws Exception {
@@ -97,7 +117,13 @@ public class QdrantDatabase {
                            List<KeyMatchData> should) {
     }
 
-    record QueryResponse(List<Chunk> result) {
+    record QueryResponse(QueryResponseResult result) {
+    }
+
+    record QueryResponseResult(List<Chunk> points, List<CollectionName> collections) {
+    }
+
+    record CollectionName(String name) {
     }
 }
 

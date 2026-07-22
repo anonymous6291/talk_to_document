@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Assistant</title>
+
+    <link rel="stylesheet" href="/home/style.css">
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+            <h2>📚 Documents</h2>
+            <p>Select knowledge sources</p>
+            <div id="documentContainer"></div>
+        </div>
+        <!--<div id="documents" class="documents">
+            <div class="loading-docs">
+                Loading documents...
+            </div>
+        </div>--->
+
+    </aside>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="delete-modal">
+        <div class="delete-modal-content">
+
+            <h2>Delete Documents</h2>
+
+            <p>
+                Are you sure you want to delete the following document(s)?
+            </p>
+
+            <div id="deleteDocumentList" class="delete-modal-document-list"></div>
+
+            <div class="delete-modal-buttons">
+                <button class="delete-modal-cancel-btn" onclick="closeDeleteModal()">
+                    Cancel
+                </button>
+
+                <button class="delete-modal-delete-btn" onclick="confirmDelete()">
+                    Delete
+                </button>
+            </div>
+
+        </div>
+    </div>
+    <main class="chat-area">
+
+        <div class="chat-header">
+            <h1>🌿 RAG Assistant</h1>
+            <span>Your calm AI workspace</span>
+        </div>
+
+        <div id="chatMessages" class="chat-messages"></div>
+
+        <div class="chat-input">
+
+            <button id="openModal">Upload File</button>
+
+            <!-- Modal -->
+            <div id="uploadModal" class="modal">
+                <div class="modal-content">
+                    <h2>Select File(s)</h2>
+
+                    <input type="file" id="fileInput" hidden multiple>
+
+                    <button id="selectFileBtn">Choose File(s)</button>
+
+                    <p id="fileName">No files selected</p>
+                    <div>
+                        Section name: <input type="text" id="section-name">
+                    </div>
+
+                    <div id="showSectionStatus"></div>
+
+                    <div class="upload_buttons">
+                        <button id="uploadBtn">Upload</button>
+                        <button id="cancelBtn">Cancel</button>
+                    </div>
+
+                    <p id="status"></p>
+                </div>
+            </div>
+
+            <textarea
+                    id="queryInput"
+                    placeholder="Ask anything..."
+                    rows="1"></textarea>
+
+            <button id="sendBtn">
+                Send
+            </button>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="/home/script.js"></script>
+
+</body>
+</html>

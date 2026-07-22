@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import talktodocuments.talk_to_documents.database.data.user.Session;
 import talktodocuments.talk_to_documents.database.data.user.SessionService;
 import talktodocuments.talk_to_documents.database.data.user.UserService;
+import talktodocuments.talk_to_documents.database.embedding.QdrantDatabase;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -18,20 +19,23 @@ import java.time.Instant;
 @Controller
 public class Login {
     private final UserService userService;
+    private final QdrantDatabase qdrantDatabase;
     private final SessionService sessionService;
 
-    public Login(UserService userService, SessionService sessionService) {
+    public Login(UserService userService, QdrantDatabase qdrantDatabase, SessionService sessionService) {
         this.userService = userService;
+        this.qdrantDatabase = qdrantDatabase;
         this.sessionService = sessionService;
     }
 
     @GetMapping({"/", "/login"})
-    public String loginPage(@CookieValue(name = "email", required = false) String emailId, @CookieValue(name = "sessionId", required = false) String sessionId) {
+    public String loginPage(@CookieValue(name = "email", required = false) String emailId, @CookieValue(name = "sessionId", required = false) String sessionId) throws Exception {
         if (emailId != null && sessionId != null && sessionService.isValidSession(emailId, sessionId)) {
             return "forward:/home";
         }
-        return "html/login.html";
         //userService.addUser("1@gmail.com", "12345");
+        //qdrantDatabase.addCollection("1@gmail.com");
+        return "login.html";
     }
 
     @PostMapping({"/", "/login"})
@@ -50,7 +54,6 @@ public class Login {
         sessionCookie.setMaxAge(cookieAge);
         httpServletResponse.addCookie(emailCookie);
         httpServletResponse.addCookie(sessionCookie);
-        httpServletResponse.setStatus(200);
         httpServletResponse.sendRedirect("/home");
     }
 }

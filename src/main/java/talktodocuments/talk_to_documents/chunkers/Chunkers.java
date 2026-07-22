@@ -19,14 +19,19 @@ public class Chunkers {
         fileFormatChunkers.remove(format);
     }
 
-    public List<String> getChunks(File input) throws Exception {
-        String fileName = input.getName();
-        int extensionIndex = fileName.lastIndexOf('.');
-        Chunker chunker;
-        if (extensionIndex == -1) {
-            chunker = fileFormatChunkers.get("");
-        } else {
-            chunker = fileFormatChunkers.get(fileName.substring(extensionIndex + 1));
+    public List<String> getChunks(File input, String extension) throws Exception {
+        if (extension == null) {
+            String fileName = input.getName();
+            int extensionIndex = fileName.lastIndexOf('.');
+            if (extensionIndex == -1) {
+                extension = "";
+            } else {
+                extension = fileName.substring(extensionIndex + 1);
+            }
+        }
+        Chunker chunker = fileFormatChunkers.get(extension);
+        if (chunker == null) {
+            throw new IllegalArgumentException("Chunking of file with extension [" + extension+"] is not supported.");
         }
         return chunker.getChunks(input);
     }

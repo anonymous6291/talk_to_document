@@ -23,7 +23,7 @@ public class DocumentData {
     @Column(nullable = false)
     private String section;
     @Column(nullable = false)
-    private LocalDateTime creationDateTime;
+    private String creationDateTime;
 
     public DocumentData() {
     }
@@ -33,6 +33,6 @@ public class DocumentData {
         this.documentId = documentId;
         this.documentName = documentName;
         this.section = section;
-        this.creationDateTime = LocalDateTime.now();
+        this.creationDateTime = LocalDateTime.now().toString();
     }
 }

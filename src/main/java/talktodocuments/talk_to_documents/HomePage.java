@@ -18,6 +18,6 @@ public class HomePage {
         if (emailId == null || sessionId == null || !sessionService.isValidSession(emailId, sessionId)) {
             return "redirect:/login";
         }
-        return "html/home.html";
+        return "home.html";
     }
 }

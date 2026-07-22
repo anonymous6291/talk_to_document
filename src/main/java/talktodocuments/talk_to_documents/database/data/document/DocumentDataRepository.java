@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface DocumentDataRepository extends JpaRepository<DocumentData, Long> {
     List<DocumentData> findAllByUserId(String userId);
+
+    boolean existsByUserIdAndDocumentId(String userId, String documentId);
 }

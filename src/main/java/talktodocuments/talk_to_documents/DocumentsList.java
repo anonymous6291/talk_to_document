@@ -42,8 +42,5 @@ public class DocumentsList {
     }
 }
 
-record JSONDocumentData(String documentName, String documentId, String section, String creationDateTime) {
-}
-
 record JSONDocumentDataList(List<JSONDocumentData> documents) {
 }

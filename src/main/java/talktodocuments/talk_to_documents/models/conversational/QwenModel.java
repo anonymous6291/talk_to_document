@@ -2,9 +2,8 @@ package talktodocuments.talk_to_documents.models.conversational;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.stereotype.Service;
-import tools.jackson.databind.util.JSONPObject;
-import tools.jackson.databind.util.JSONWrappedObject;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -27,14 +26,17 @@ public class QwenModel {
         llmConnection = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build();
         jsonParser = new ObjectMapper();
         jsonParser.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        jsonParser.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
     public String sendPrompt(List<ConversationMessage> queries) throws Exception {
         ModelJSONQuery modelJSONQuery = new ModelJSONQuery(MODEL_NAME, queries, TEMPERATURE, MAX_TOKENS, STREAM);
         String modelJSONQueryString = jsonParser.writeValueAsString(modelJSONQuery);
+        IO.println(modelJSONQueryString);
         HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(LLM_URL)).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(modelJSONQueryString)).build();
         HttpResponse<String> httpResponse = llmConnection.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         String responseString = httpResponse.body();
+        IO.println("Response LLM: " + jsonParser.readTree(responseString).findPath("message").findPath("content").toString());
         return jsonParser.readTree(responseString).findPath("message").findPath("content").toString();
     }
 
