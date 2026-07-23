@@ -13,6 +13,8 @@ public class DocumentChunk {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(nullable = false)
+    private String userId;
+    @Column(nullable = false)
     private String documentId;
     @Column(nullable = false, unique = true)
     private String chunkId;
@@ -20,7 +22,8 @@ public class DocumentChunk {
     public DocumentChunk() {
     }
 
-    public DocumentChunk(String documentId, String chunkId) {
+    public DocumentChunk(String userId, String documentId, String chunkId) {
+        this.userId = userId;
         this.documentId = documentId;
         this.chunkId = chunkId;
     }

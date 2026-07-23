@@ -1,4 +1,4 @@
-package talktodocuments.talk_to_documents;
+package talktodocuments.talk_to_documents.login;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;

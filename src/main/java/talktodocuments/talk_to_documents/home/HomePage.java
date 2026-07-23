@@ -1,4 +1,4 @@
-package talktodocuments.talk_to_documents;
+package talktodocuments.talk_to_documents.home;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;

@@ -14,14 +14,18 @@ public class DocumentChunkService {
     }
 
     @Transactional
-    public void addAllChunks(String documentId, List<String> chunkIds) {
+    public void addAllChunksForDocumentId(String userId, String documentId, List<String> chunkIds) {
         for (String chunkId : chunkIds) {
-            documentChunkRepository.save(new DocumentChunk(documentId, chunkId));
+            documentChunkRepository.save(new DocumentChunk(userId, documentId, chunkId));
         }
     }
 
+    public List<DocumentChunk> getAllChunksForDocumentId(String documentId) {
+        return documentChunkRepository.findAllByDocumentId(documentId);
+    }
+
     @Transactional
-    public void deleteAllChunks(String documentId) {
+    public void deleteAllChunksForDocumentId(String documentId) {
         documentChunkRepository.deleteAllByDocumentId(documentId);
     }
 }

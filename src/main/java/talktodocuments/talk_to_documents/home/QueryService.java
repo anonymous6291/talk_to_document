@@ -1,4 +1,4 @@
-package talktodocuments.talk_to_documents;
+package talktodocuments.talk_to_documents.home;
 
 import org.springframework.stereotype.Service;
 import talktodocuments.talk_to_documents.database.embedding.Chunk;

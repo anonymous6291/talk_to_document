@@ -20,6 +20,15 @@ public class DocumentDataService {
         return documentData;
     }
 
+    @Transactional
+    public boolean deleteDocumentData(String userId, String documentId) {
+        return documentDataRepository.deleteByUserIdAndDocumentId(userId, documentId) > 0;
+    }
+
+    public List<DocumentData> getEntireDocumentData() {
+        return documentDataRepository.findAll();
+    }
+
     public List<DocumentData> getAllDocumentDataForUserId(String userId) {
         return documentDataRepository.findAllByUserId(userId);
     }

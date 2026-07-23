@@ -13,45 +13,27 @@ window.onload = async () => {
 //-----------------------------------------------------
 
 let documents = [];
+
 let documentsToDelete = [];
+
 /*{
     documentName:"Physics Notes",
     documentId:1,
     section:"Science",
     creationDateTime:"2026-07-20"
-},
-{
-    documentName:"Chemistry",
-    documentId:2,
-    section:"Science",
-    creationDateTime:"2026-07-19"
-},
-{
-    documentName:"Algebra",
-    documentId:3,
-    section:"Math",
-    creationDateTime:"2026-07-18"
-},
-{
-    documentName:"Geometry",
-    documentId:4,
-    section:"Math",
-    creationDateTime:"2026-07-17"
-},
-{
-    documentName:"History",
-    documentId:5,
-    section:"Social",
-    creationDateTime:"2026-07-16"
-}
-];
-*/
+}*/
 
 
 let grouped = {};
 
 function renderDocuments() {
+
+    console.log("Rendering")
+
+    documents.forEach((x) => console.log(x))
+
     grouped = {};
+
 //--------------------------------------------------
 // Group by section
 //--------------------------------------------------
@@ -65,6 +47,10 @@ function renderDocuments() {
     });
 
     const container = document.getElementById("documentContainer");
+
+    container.replaceChildren();
+
+    container.innerHTML = "";
 
 
 //--------------------------------------------------
@@ -185,25 +171,13 @@ function renderDocuments() {
             const row = document.createElement("div");
             row.className = "document";
 
-            const cb = document.createElement("input");
-            cb.type = "checkbox";
-            cb.id = "doc-" + doc.documentId;
-
-            const name = document.createElement("div");
-            name.className = "document-name";
-            name.textContent = doc.documentName;
-
-            const info = document.createElement("div");
-            info.className = "document-info";
-            info.textContent =
-                doc.creationDateTime;
-
-            const del = document.createElement("button");
-            del.textContent = "Delete";
-
             //--------------------------------------------------
             // Checkbox
             //--------------------------------------------------
+
+            const cb = document.createElement("input");
+            cb.type = "checkbox";
+            cb.id = "doc-" + doc.documentId;
 
             cb.addEventListener("change", () => {
 
@@ -216,19 +190,51 @@ function renderDocuments() {
 
             });
 
+            const info = document.createElement("div");
+            info.className = "document-info";
+
+            const name = document.createElement("div");
+            name.className = "document-name";
+            name.textContent = doc.documentName;
+
+            const dateTimeString = new Date(doc.creationDateTime).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            });
+
+            const dateTime = document.createElement("div");
+            dateTime.className = "document-date-time";
+            dateTime.textContent = dateTimeString;
+
             //--------------------------------------------------
             // Delete
             //--------------------------------------------------
 
-            del.addEventListener("click", () => {
+            const del = document.createElement("button");
+            del.className = "document-delete-button";
+            del.textContent = "Delete";
 
-                deleteDocument(doc);
+            del.addEventListener("click", (e) => {
+
+                e.stopPropagation();
+
+                documentsToDelete = [doc];
+
+                openDeleteModal();
 
             });
 
+            info.appendChild(name);
+            info.appendChild(dateTime)
+
+
             row.appendChild(cb);
-            row.appendChild(name);
-            row.appendChild(info);
+            row.appendChild(info)
+
             row.appendChild(del);
 
             list.appendChild(row);
@@ -247,10 +253,7 @@ function renderDocuments() {
 // Update section checkbox
 //--------------------------------------------------
 
-function updateSectionCheckbox(
-    checkbox,
-    docs
-) {
+function updateSectionCheckbox(checkbox, docs) {
 
     const selected = docs.filter(d => d.selected).length;
 
@@ -270,17 +273,6 @@ function updateSectionCheckbox(
         checkbox.indeterminate = true;
 
     }
-
-}
-
-
-//--------------------------------------------------
-// Delete callbacks
-//--------------------------------------------------
-
-function deleteDocument(doc) {
-
-    console.log("Delete document:", doc);
 
 }
 
@@ -338,7 +330,6 @@ async function loadDocuments() {
 
 }
 
-
 function openDeleteModal() {
 
     const list = document.getElementById("deleteDocumentList");
@@ -372,20 +363,60 @@ function closeDeleteModal() {
 
 function confirmDelete() {
 
-    deleteDocuments(documentsToDelete);
+    deleteDocuments(documentsToDelete).then((success) => {
 
-    closeDeleteModal();
+        if (success) {
+            renderDocuments();
+        }
+
+        closeDeleteModal();
+
+    });
 
 }
 
-function deleteDocuments(documentList) {
+async function deleteDocuments(documentList) {
 
     console.log("Deleting...");
 
-    documentList.forEach(doc => {
-        console.log(doc.documentId);
+    console.log(documentList.map(x => x.documentId));
+
+    const response = await fetch("/deleteDocuments", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+            documentIds: documentList.map(x => x.documentId),
+
+        })
+
     });
 
+    const data = await response.json();
+
+    console.log(data.success)
+
+    if (data.success) {
+        console.log("Delete")
+        documentsToDelete.forEach((x) => console.log(x))
+        console.log("Documents")
+        documents.forEach((x) => console.log(x))
+
+        documentsToDelete.forEach(doc => documents.splice(documents.indexOf(doc), 1));
+
+
+        console.log("Result")
+        documents.forEach((x) => console.log(x))
+        console.log("End")
+
+    }
+
+    return data.success;
 }
 
 
@@ -506,6 +537,7 @@ async function sendQuery() {
 
         addMessage("Something went wrong.", "bot");
 
+        console.log(e)
     }
 
 }
@@ -600,7 +632,7 @@ uploadBtn.addEventListener("click", async () => {
 
         renderDocuments();
 
-        setTimeout(resetModal, 1000);
+        setTimeout(resetModal, 600);
 
     } catch (err) {
         console.error(err);

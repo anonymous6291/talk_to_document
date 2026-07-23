@@ -19,8 +19,8 @@ public class RemovableChunkService {
     }
 
     @Transactional
-    public void addRemovableChunk(String chunkId) {
-        removableChunkRepository.save(new RemovableChunk(chunkId, LocalDateTime.now()));
+    public void addRemovableChunk(String userId, String chunkId) {
+        removableChunkRepository.save(new RemovableChunk(userId, chunkId, LocalDateTime.now()));
     }
 
     @Transactional

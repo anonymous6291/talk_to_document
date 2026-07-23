@@ -14,6 +14,8 @@ public class RemovableChunk {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @Column(nullable = false)
+    private String userId;
     @Column(unique = true, nullable = false)
     private String chunkId;
     @Column(nullable = false)
@@ -22,7 +24,8 @@ public class RemovableChunk {
     public RemovableChunk() {
     }
 
-    public RemovableChunk(String chunkId, LocalDateTime registerDateAndTime) {
+    public RemovableChunk(String userId, String chunkId, LocalDateTime registerDateAndTime) {
+        this.userId = userId;
         this.chunkId = chunkId;
         this.registerDateAndTime = registerDateAndTime;
     }

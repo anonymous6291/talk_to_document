@@ -1,4 +1,4 @@
-package talktodocuments.talk_to_documents;
+package talktodocuments.talk_to_documents.home;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,7 +22,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class DocumentHandler {
-    private static final String DOCUMENT_STORAGE_PATH = "./talk_to_document";
     private final AtomicInteger documentNumber = new AtomicInteger();
     private final Chunkers chunkers;
     private final DocumentChunkService documentChunkService;
@@ -30,14 +29,16 @@ public class DocumentHandler {
     private final DocumentDataService documentDataService;
     private final QdrantDatabase qdrantDatabase;
     private final Embedder embedder;
+    private final LocalDocumentStorage localDocumentStorage;
 
-    public DocumentHandler(Chunkers chunkers, DocumentChunkService documentChunkService, RemovableChunkService removableChunkService, DocumentDataService documentDataService, QdrantDatabase qdrantDatabase, Embedder embedder) {
+    public DocumentHandler(Chunkers chunkers, DocumentChunkService documentChunkService, RemovableChunkService removableChunkService, DocumentDataService documentDataService, QdrantDatabase qdrantDatabase, Embedder embedder, LocalDocumentStorage localDocumentStorage) {
         this.chunkers = chunkers;
         this.documentChunkService = documentChunkService;
         this.removableChunkService = removableChunkService;
         this.documentDataService = documentDataService;
         this.qdrantDatabase = qdrantDatabase;
         this.embedder = embedder;
+        this.localDocumentStorage = localDocumentStorage;
     }
 
     public List<JSONDocumentData> processDocuments(String userId, String section, MultipartFile[] files) {
@@ -67,7 +68,7 @@ public class DocumentHandler {
         IO.println(fileName + ":filename");
         String extension = originalFileName.substring(originalFileName.indexOf('.') + 1);
         String documentId = UUID.randomUUID().toString().concat(Integer.toString(documentNumber.incrementAndGet()));
-        Path targetFilePath = Path.of(DOCUMENT_STORAGE_PATH, userId, documentId);
+        Path targetFilePath = localDocumentStorage.getLocalDocumentStoragePath(userId, documentId);
         Files.createDirectories(targetFilePath.getParent());
         file.transferTo(targetFilePath);
         List<String> textChunks = chunkers.getChunks(targetFilePath.toFile(), extension);
@@ -80,12 +81,12 @@ public class DocumentHandler {
         for (int i = 0; i < numberOfChunks; i++) {
             String chunkId = chunkIds.get(i);
             chunks.add(new Chunk(chunkId, embeddings.get(i), new ChunkPayload(textChunks.get(i), documentId)));
-            removableChunkService.addRemovableChunk(chunkId);
+            removableChunkService.addRemovableChunk(userId, chunkId);
         }
         IO.println("2");
         qdrantDatabase.addChunks(userId, chunks);
         IO.println("3");
-        documentChunkService.addAllChunks(documentId, chunkIds);
+        documentChunkService.addAllChunksForDocumentId(userId, documentId, chunkIds);
         IO.println("4");
         DocumentData documentData = documentDataService.addDocumentDataForUserId(userId, originalFileName, documentId, section);
         IO.println("5");

@@ -11,7 +11,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -59,6 +58,13 @@ public class QdrantDatabase {
         return httpResponse.statusCode() == HttpStatus.OK.value();
     }
 
+    public boolean deleteCollection(String collectionName) throws Exception {
+        URI uri = URI.create(BASE_URL + collectionName);
+        HttpRequest httpRequest = HttpRequest.newBuilder(uri).DELETE().build();
+        HttpResponse<Void> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.discarding());
+        return httpResponse.statusCode() == 200;
+    }
+
     public boolean addChunks(String collectionName, List<Chunk> chunks) throws Exception {
         ChunkData chunkData = new ChunkData(chunks);
         String chunkDataString = jsonParser.writeValueAsString(chunkData);
@@ -72,12 +78,11 @@ public class QdrantDatabase {
     }
 
     public List<Chunk> searchInAll(String collectionName, float[] vector, String payloadFieldName, List<String> matchValues) throws Exception {
-        List<KeyMatchData> keyMatchData = new LinkedList<>();
-        for (String documentId : matchValues) {
-            keyMatchData.add(new KeyMatchData(payloadFieldName, new MatchPayloadData(documentId)));
-        }
-        ShouldQueryData shouldQueryData = new ShouldQueryData(vector, QUERY_RESPONSE_LIMIT, QUERY_RESPONSE_WITH_PAYLOAD, QUERY_RESPONSE_WITH_VECTOR, keyMatchData);
-        String shouldQueryDataString = jsonParser.writeValueAsString(shouldQueryData);
+        Must must = new Must(payloadFieldName, new QueryMatch(matchValues));
+        QueryFilter queryFilter = new QueryFilter(List.of(must));
+        QueryData queryData = new QueryData(vector, QUERY_RESPONSE_LIMIT, QUERY_RESPONSE_WITH_PAYLOAD, QUERY_RESPONSE_WITH_VECTOR, queryFilter);
+        String shouldQueryDataString = jsonParser.writeValueAsString(queryData);
+        IO.println(shouldQueryDataString);
         String url = BASE_URL + collectionName + QUERY_POINT_URL_EXTENSION;
         HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(url)).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(shouldQueryDataString)).build();
         HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
@@ -107,14 +112,17 @@ public class QdrantDatabase {
     record DeleteChunkData(List<String> points) {
     }
 
-    record MatchPayloadData(String value) {
+    record QueryMatch(List<String> any) {
     }
 
-    record KeyMatchData(String key, MatchPayloadData match) {
+    record Must(String key, QueryMatch match) {
     }
 
-    record ShouldQueryData(float[] query, int limit, boolean with_payload, boolean with_vector,
-                           List<KeyMatchData> should) {
+    record QueryFilter(List<Must> must) {
+    }
+
+    record QueryData(float[] query, int limit, boolean with_payload, boolean with_vector,
+                     QueryFilter filter) {
     }
 
     record QueryResponse(QueryResponseResult result) {

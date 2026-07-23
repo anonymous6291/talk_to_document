@@ -1,4 +1,4 @@
-package talktodocuments.talk_to_documents;
+package talktodocuments.talk_to_documents.home;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,13 +12,13 @@ import talktodocuments.talk_to_documents.database.data.user.SessionService;
 import java.util.List;
 
 @RestController
-public class Query {
+public class QueryHandler {
     private final SessionService sessionService;
     private final QueryService queryService;
     private final DocumentDataService documentDataService;
     private final ObjectMapper jsonParser;
 
-    public Query(SessionService sessionService, QueryService queryService, DocumentDataService documentDataService) {
+    public QueryHandler(SessionService sessionService, QueryService queryService, DocumentDataService documentDataService) {
         this.sessionService = sessionService;
         this.queryService = queryService;
         this.documentDataService = documentDataService;
@@ -31,6 +31,7 @@ public class Query {
         if (emailId == null || sessionId == null || !sessionService.isValidSession(emailId, sessionId)) {
             return jsonParser.writeValueAsString(new QueryResult(false, "Invalid request."));
         }
+        IO.println(queryData.allowedDocuments());
         for (String documentId : queryData.allowedDocuments()) {
             if (!documentDataService.documentIdExistsForUserId(emailId, documentId)) {
                 return jsonParser.writeValueAsString(new QueryResult(false, "Document doesn't exists."));
