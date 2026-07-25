@@ -3,6 +3,7 @@ package talktodocuments.talk_to_documents.models.conversational;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -14,7 +15,8 @@ import java.util.List;
 
 @Service
 public class QwenModel {
-    private final static String LLM_URL = "http://localhost:9000/v1/chat/completions";
+    @Value("${qwen.port}")
+    private int QWEN_PORT;
     private final static String MODEL_NAME = "qwen2.5-3b";
     private final static float TEMPERATURE = 0.3F;
     private final static int MAX_TOKENS = 2056;
@@ -32,7 +34,7 @@ public class QwenModel {
     public String sendPrompt(List<ConversationMessage> queries) throws Exception {
         ModelJSONQuery modelJSONQuery = new ModelJSONQuery(MODEL_NAME, queries, TEMPERATURE, MAX_TOKENS, STREAM);
         String modelJSONQueryString = jsonParser.writeValueAsString(modelJSONQuery);
-        HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(LLM_URL)).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(modelJSONQueryString)).build();
+        HttpRequest httpRequest = HttpRequest.newBuilder(URI.create("http://localhost:" + QWEN_PORT + "/v1/chat/completions")).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(modelJSONQueryString)).build();
         HttpResponse<String> httpResponse = llmConnection.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         String responseString = httpResponse.body();
         return jsonParser.readTree(responseString).findPath("message").findPath("content").toString();

@@ -2,6 +2,7 @@ package talktodocuments.talk_to_documents.models.embedding;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -13,7 +14,8 @@ import java.util.List;
 
 @Service
 public class GemmaModel {
-    private static final String LLM_URL = "http://127.0.0.1:9001/v1/embeddings";
+    @Value("${gemma.port}")
+    private int GEMMA_PORT;
     private static final String MODEL_NAME = "gemma-embedding";
     private final HttpClient llmClient;
     private final ObjectMapper jsonParser;
@@ -27,7 +29,7 @@ public class GemmaModel {
     public List<EmbeddingData> getEmbedding(List<String> inputs) throws Exception {
         EmbeddingModelQuery embeddingModelQuery = new EmbeddingModelQuery(MODEL_NAME, inputs);
         String queryString = jsonParser.writeValueAsString(embeddingModelQuery);
-        HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(LLM_URL)).POST(HttpRequest.BodyPublishers.ofString(queryString)).build();
+        HttpRequest httpRequest = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + GEMMA_PORT + "/v1/embeddings")).POST(HttpRequest.BodyPublishers.ofString(queryString)).build();
         HttpResponse<String> httpResponse = llmClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         String responseString = httpResponse.body();
         EmbeddingModelResponse embeddingModelResponse = jsonParser.readValue(responseString, EmbeddingModelResponse.class);

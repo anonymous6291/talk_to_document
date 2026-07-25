@@ -23,11 +23,11 @@ public class Login {
     }
 
     @GetMapping({"/", "/login"})
-    public String loginPage(@CookieValue(name = "email", required = false) String emailId, @CookieValue(name = "sessionId", required = false) String sessionId) {
+    public String loginPage(@CookieValue(name = "email", required = false) String emailId, @CookieValue(name = "sessionId", required = false) String sessionId) throws Exception {
         if (userManager.isValidSession(emailId, sessionId)) {
             return "forward:/home";
         }
-        //userManager.addUser("1@gmail.com", "12345");
+        userManager.addUser("1@gmail.com", "12345");
         return "login.html";
     }
 
