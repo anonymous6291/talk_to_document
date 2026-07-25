@@ -5,12 +5,19 @@
     font-family: Inter, sans-serif;
 }
 
-body {
+/* ---------- SPACE BACKGROUND ---------- */
 
-    background: linear-gradient(135deg, #edf7f3, #dfeff4);
-
-    height: 100vh;
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    background-image: url("/images/background.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
+
 
 button {
     padding: 10px 18px;
@@ -41,7 +48,6 @@ button {
     width: 300px;
     padding: 12px 18px;
     font-size: 16px;
-    border: 2px solid #ccc;
     border-radius: 999px; /* Makes it pill-shaped */
     outline: none;
     transition: all 0.3s ease;
@@ -73,7 +79,7 @@ button {
 .app {
 
     display: flex;
-    height: 100vh;
+    min-height: 100dvh;
 
 }
 
@@ -81,35 +87,28 @@ button {
 /* Sidebar */
 
 .sidebar {
-
     width: 320px;
-
-    background: white;
-
-    border-right: 1px solid #dfe5e8;
-
+    background: inherit;
     display: flex;
     flex-direction: column;
-
 }
 
 .sidebar-header {
 
-    padding: 28px;
-
-    border-bottom: 1px solid #ececec;
+    backdrop-filter: blur(10px);
+    padding: 26px;
 
 }
 
 .sidebar-header h2 {
 
-    color: #355c4d;
+    color: #31bdaa;
 
 }
 
 .sidebar-header p {
 
-    color: #888;
+    color: #c5c522;
     margin-top: 6px;
     font-size: 14px;
 
@@ -138,7 +137,6 @@ button {
 
 .delete-modal-document-list {
     margin: 20px 0;
-    border: 1px solid #ddd;
     border-radius: 6px;
 }
 
@@ -146,7 +144,6 @@ button {
     display: flex;
     justify-content: space-between;
     padding: 10px;
-    border-bottom: 1px solid #eee;
 }
 
 .document-item:last-child {
@@ -169,31 +166,28 @@ button {
     color: white;
 }
 
-
-/*body{
-    font-family:Arial,Helvetica,sans-serif;
-    background:#f4f4f4;
-    padding:30px;
-}*/
-
 .section {
-    background: white;
-    border: 1px solid #ccc;
     border-radius: 8px;
     margin-bottom: 15px;
     overflow: hidden;
 }
 
 .section-header {
+    backdrop-filter: blur(10px);
     display: flex;
     align-items: center;
     padding: 12px;
-    background: #ececec;
     cursor: pointer;
     gap: 10px;
+    border: rgb(148 64 189 / 0.9) 2px dotted;
+    border-radius: 30px;
+    color: rgb(28 117 223 / 0.9);
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .section-title {
+    overflow: scroll;
     flex: 1;
     font-weight: bold;
 }
@@ -208,49 +202,48 @@ button {
 }
 
 .document {
+    backdrop-filter: blur(10px);
+    overflow: hidden;
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 10px 12px;
-    border-top: 1px solid #ddd;
+    padding: 10px 10px;
     gap: 10px;
+    border: rgb(148 64 189 / 0.9) 2px dotted;
+    border-radius: 30px;
 }
 
 .document:hover {
-    background: #fafafa;
 }
 
 .document-info {
     display: flex;
     flex-direction: column;
-    /*color:#777;
-    font-size:13px;*/
 }
 
 .document-name {
+    overflow-wrap: break-word;
+    word-break: break-word;
     font-size: 16px;
     font-weight: 600;
-    color: #222
-    /*flex:1;*/
+    color: rgb(28 117 223 / 0.9);
 }
 
 .document-date-time {
+    color: #31bdaa;
     font-size: 13px;
-    color: #777;
     margin-top: 4px;
 }
 
 .document-delete-button {
-    padding: 8px 14px;
-    background: #e53935;
-    color: white;
+    padding: 1px 1px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    animation: fade .2s ease;
 }
 
 .document-delete-button:hover {
-    background: #c62828;
 }
 
 button {
@@ -280,25 +273,10 @@ button {
 
 .chat-header {
 
-    background: rgba(255, 255, 255, .75);
-
     backdrop-filter: blur(10px);
 
-    border-bottom: 1px solid #ddd;
-
     padding: 22px;
-
-}
-
-.chat-header h1 {
-
-    color: #2b5746;
-
-}
-
-.chat-header span {
-
-    color: #6b7772;
+    color: #31bdaa;
 
 }
 
@@ -313,6 +291,17 @@ button {
 }
 
 .message {
+
+    max-width: 70%;
+
+    width: fit-content;
+
+    max-height: 200px;
+
+    overflow: scroll;
+
+    overflow-wrap: break-word;
+    word-break: break-word;
 
     padding: 15px 18px;
 
@@ -336,13 +325,15 @@ button {
 
     color: white;
 
+    border: 1px solid #e4e4e4;
+
 }
 
 .bot {
 
-    background: white;
+    background: #88a624;
 
-    color: #333;
+    color: whitesmoke;
 
     border: 1px solid #e4e4e4;
 
@@ -350,19 +341,23 @@ button {
 
 .chat-input {
 
+    height: 125px;
+
     display: flex;
 
     padding: 20px;
 
     gap: 15px;
 
-    border-top: 1px solid #ddd;
-
-    background: white;
-
 }
 
 textarea {
+
+    background: inherit;
+
+    backdrop-filter: blur(50px);
+
+    color: #31bdaa;
 
     flex: 1;
 
@@ -372,14 +367,16 @@ textarea {
 
     outline: none;
 
-    background: #f5f7f8;
-
     border-radius: 14px;
 
     padding: 15px;
 
     font-size: 16px;
 
+}
+
+textarea::placeholder {
+    text-align: center;
 }
 
 button {
@@ -406,6 +403,31 @@ button:hover {
 
     background: #4f9678;
 
+}
+
+.chat-field-button {
+
+    all: unset;
+
+    width: 50px;
+
+    border: none;
+
+    background: #5da987;
+
+    display: flex;
+
+    align-items: center;
+
+    color: white;
+
+    border-radius: 12px;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    transition: .25s;
 }
 
 .loading {
@@ -496,7 +518,6 @@ button:hover {
     .sidebar {
 
         width: 100%;
-        height: 250px;
 
     }
 

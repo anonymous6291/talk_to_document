@@ -32,11 +32,9 @@ public class QwenModel {
     public String sendPrompt(List<ConversationMessage> queries) throws Exception {
         ModelJSONQuery modelJSONQuery = new ModelJSONQuery(MODEL_NAME, queries, TEMPERATURE, MAX_TOKENS, STREAM);
         String modelJSONQueryString = jsonParser.writeValueAsString(modelJSONQuery);
-        IO.println(modelJSONQueryString);
         HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(LLM_URL)).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(modelJSONQueryString)).build();
         HttpResponse<String> httpResponse = llmConnection.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         String responseString = httpResponse.body();
-        IO.println("Response LLM: " + jsonParser.readTree(responseString).findPath("message").findPath("content").toString());
         return jsonParser.readTree(responseString).findPath("message").findPath("content").toString();
     }
 

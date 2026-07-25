@@ -2,16 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>RAG Assistant</title>
 
-    <link rel="stylesheet" href="/home/style.css">
-    <link rel="icon" href="/images/favicon.png" type="image/png">
+    <link href="/home/style.css" rel="stylesheet">
+    <link href="/images/rag_icon.png" rel="icon" type="image/png">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 </head>
+
 <body>
+
+<div class="space-bg">
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    <div class="nebula"></div>
+</div>
+
 
 <div class="app">
 
@@ -26,16 +35,10 @@
                 Loading documents...
             </div>
         </div>
-        <!--<div id="documents" class="documents">
-            <div class="loading-docs">
-                Loading documents...
-            </div>
-        </div>--->
-
     </aside>
 
     <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="delete-modal">
+    <div class="delete-modal" id="deleteModal">
         <div class="delete-modal-content">
 
             <h2>Delete Documents</h2>
@@ -44,7 +47,7 @@
                 Are you sure you want to delete the following document(s)?
             </p>
 
-            <div id="deleteDocumentList" class="delete-modal-document-list"></div>
+            <div class="delete-modal-document-list" id="deleteDocumentList"></div>
 
             <div class="delete-modal-buttons">
                 <button class="delete-modal-cancel-btn" onclick="closeDeleteModal()">
@@ -61,35 +64,138 @@
     <main class="chat-area">
 
         <div class="chat-header">
-            <h1>🌿 RAG Assistant</h1>
-            <span>Your calm AI workspace</span>
+            <h1>🌿 Your Personal Offline RAG Assistant</h1>
         </div>
 
-        <div id="chatMessages" class="chat-messages"></div>
+        <div class="chat-messages" id="chatMessages"></div>
 
         <div class="chat-input">
 
-            <button id="openModal">Upload File</button>
+            <button class="chat-field-button" id="openModal">
+                <svg fill="none"
+                     height="50"
+                     viewBox="0 0 50 50"
+                     width="50"
+                     xmlns="http://www.w3.org/2000/svg">
+
+                    <defs>
+                        <!-- Galaxy Gradient -->
+                        <linearGradient id="rocket" x1="12" x2="38" y1="42" y2="8">
+                            <stop offset="0%" stop-color="#22D3EE"/>
+                            <stop offset="45%" stop-color="#6366F1"/>
+                            <stop offset="100%" stop-color="#EC4899"/>
+                        </linearGradient>
+
+                        <!-- Rocket Flame -->
+                        <linearGradient id="flame" x1="25" x2="25" y1="40" y2="48">
+                            <stop offset="0%" stop-color="#FDE68A"/>
+                            <stop offset="100%" stop-color="#FB923C"/>
+                        </linearGradient>
+
+                        <!-- Glow Trail -->
+                        <linearGradient id="trail" x1="25" x2="25" y1="45" y2="20">
+                            <stop offset="0%" stop-color="#67E8F9" stop-opacity="0"/>
+                            <stop offset="100%" stop-color="#A5F3FC"/>
+                        </linearGradient>
+
+                        <!-- Nebula -->
+                        <radialGradient cx="50%" cy="50%" id="nebula" r="60%">
+                            <stop offset="0%" stop-color="#A855F7" stop-opacity=".25"/>
+                            <stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>
+                        </radialGradient>
+
+                        <!-- Glow -->
+                        <filter height="220%" id="glow" width="220%" x="-60%" y="-60%">
+                            <feGaussianBlur result="blur" stdDeviation="2.2"/>
+                            <feMerge>
+                                <feMergeNode in="blur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Nebula -->
+                    <circle cx="25" cy="25" fill="url(#nebula)" r="22"/>
+
+                    <!-- Rocket Trail -->
+                    <path
+                            d="M25 42C25 36 25 28 25 18"
+                            filter="url(#glow)"
+                            stroke="url(#trail)"
+                            stroke-linecap="round"
+                            stroke-width="4"
+                    />
+
+                    <!-- Rocket -->
+                    <g filter="url(#glow)">
+                        <path
+                                d="M25 8
+         C30 12 31 18 31 24
+         L25 30
+         L19 24
+         C19 18 20 12 25 8Z"
+                                fill="url(#rocket)"
+                                stroke="#F8FAFC"
+                                stroke-width="1.4"/>
+
+                        <!-- Window -->
+                        <circle cx="25" cy="18" fill="#E0F2FE" r="2"/>
+
+                        <!-- Wings -->
+                        <path d="M19 24L15 27L19 28Z" fill="#8B5CF6"/>
+                        <path d="M31 24L35 27L31 28Z" fill="#8B5CF6"/>
+
+                        <!-- Flame -->
+                        <path
+                                d="M25 30
+         C23 34 23 37 25 40
+         C27 37 27 34 25 30Z"
+                                fill="url(#flame)"/>
+                    </g>
+
+                    <!-- Upload Base -->
+                    <path
+                            d="M15 42
+       H35
+       C36.5 42 37.5 40.8 37.5 39.3
+       C37.5 37.8 36.5 36.6 35 36.6
+       H15
+       C13.5 36.6 12.5 37.8 12.5 39.3
+       C12.5 40.8 13.5 42 15 42Z"
+                            fill="#312E81"
+                            opacity=".85"/>
+
+                    <!-- Stars -->
+                    <g fill="#FDE68A">
+                        <path d="M10 10l.8 2 .8-2 2-.8-2-.8-.8-2-.8 2-2 .8z"/>
+                        <path d="M39 12l.6 1.6.6-1.6 1.6-.6-1.6-.6-.6-1.6-.6 1.6-1.6.6z"/>
+                        <circle cx="12" cy="27" r=".8"/>
+                        <circle cx="40" cy="33" r=".7"/>
+                        <circle cx="34" cy="8" r=".6"/>
+                    </g>
+
+                </svg>
+            </button>
 
             <!-- Modal -->
-            <div id="uploadModal" class="modal">
+            <div class="modal" id="uploadModal">
                 <div class="modal-content">
-                    <h2>Select File(s)</h2>
+                    <h2>Select File(s) to upload</h2>
 
-                    <input type="file" id="fileInput" hidden multiple>
+                    <input hidden id="fileInput" multiple type="file">
 
                     <button id="selectFileBtn">Choose File(s)</button>
 
                     <p id="fileName">No files selected</p>
                     <div>
-                        Section name: <input type="text" id="section-name">
+                        Section name: <input id="section-name" type="text">
                     </div>
 
                     <div id="showSectionStatus"></div>
 
                     <div class="upload_buttons">
-                        <button id="uploadBtn">Upload</button>
                         <button id="cancelBtn">Cancel</button>
+                        <button id="uploadBtn">Upload</button>
                     </div>
 
                     <p id="status"></p>
@@ -101,8 +207,79 @@
                     placeholder="Ask anything..."
                     rows="1"></textarea>
 
-            <button id="sendBtn">
-                Send
+            <button class="chat-field-button" id="sendBtn">
+                <svg fill="none"
+                     height="50"
+                     viewBox="0 0 50 50"
+                     width="50"
+                     xmlns="http://www.w3.org/2000/svg">
+
+                    <defs>
+                        <!-- Galaxy Gradient -->
+                        <linearGradient id="plane" x1="10" x2="42" y1="40" y2="8">
+                            <stop offset="0%" stop-color="#22D3EE"/>
+                            <stop offset="45%" stop-color="#6366F1"/>
+                            <stop offset="100%" stop-color="#EC4899"/>
+                        </linearGradient>
+
+                        <!-- Comet Trail -->
+                        <linearGradient id="trail" x1="5" x2="30" y1="36" y2="15">
+                            <stop offset="0%" stop-color="#67E8F9" stop-opacity="0"/>
+                            <stop offset="100%" stop-color="#A5F3FC"/>
+                        </linearGradient>
+
+                        <!-- Glow -->
+                        <filter height="220%" id="glow" width="220%" x="-60%" y="-60%">
+                            <feGaussianBlur result="blur" stdDeviation="2.5"/>
+                            <feMerge>
+                                <feMergeNode in="blur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+
+                        <!-- Nebula -->
+                        <radialGradient cx="50%" cy="50%" id="nebula" r="60%">
+                            <stop offset="0%" stop-color="#A855F7" stop-opacity=".25"/>
+                            <stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>
+                        </radialGradient>
+                    </defs>
+
+                    <!-- Nebula -->
+                    <circle cx="25" cy="25" fill="url(#nebula)" r="22"/>
+
+                    <!-- Comet Trail -->
+                    <path
+                            d="M8 36C15 34 22 28 32 18"
+                            filter="url(#glow)"
+                            stroke="url(#trail)"
+                            stroke-linecap="round"
+                            stroke-width="4"
+                    />
+
+                    <!-- Plane -->
+                    <path
+                            d="M44 7L22 28L29 43L44 7ZM22 28L7 20L44 7"
+                            fill="url(#plane)"
+                            filter="url(#glow)"
+                            stroke="#F8FAFC"
+                            stroke-linejoin="round"
+                            stroke-width="1.5"
+                    />
+
+                    <!-- Shooting Star -->
+                    <circle cx="44" cy="7" fill="#FFF7ED" r="1.8"/>
+                    <circle cx="44" cy="7" fill="#FFF7ED" opacity=".25" r="3.8"/>
+
+                    <!-- Sparkles -->
+                    <g fill="#FDE68A">
+                        <path d="M11 10l.7 2 .7-2 2-.7-2-.7-.7-2-.7 2-2 .7z"/>
+                        <path d="M39 39l.5 1.5.5-1.5 1.5-.5-1.5-.5-.5-1.5-.5 1.5-1.5.5z"/>
+                        <circle cx="18" cy="8" r=".8"/>
+                        <circle cx="9" cy="26" r=".7"/>
+                        <circle cx="35" cy="14" r=".6"/>
+                    </g>
+
+                </svg>
             </button>
 
         </div>

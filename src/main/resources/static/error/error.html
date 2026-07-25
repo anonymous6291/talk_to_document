@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>HTTP Error</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+    <link href="/images/rag_icon.png" rel="icon">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #09090b;
+            color: white;
+        }
+
+        /* Background */
+
+        .bg {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: .35;
+            animation: move 18s infinite alternate ease-in-out;
+        }
+
+        .blob:nth-child(1) {
+            background: #5b21ff;
+            left: -120px;
+            top: -80px;
+        }
+
+        .blob:nth-child(2) {
+            background: #00bfff;
+            right: -120px;
+            bottom: -100px;
+            animation-duration: 22s;
+        }
+
+        .blob:nth-child(3) {
+            background: #ff006e;
+            left: 40%;
+            top: 60%;
+            animation-duration: 26s;
+        }
+
+        @keyframes move {
+            from {
+                transform: translate(0, 0) scale(1);
+            }
+            to {
+                transform: translate(120px, -80px) scale(1.35);
+            }
+        }
+
+        /* Card */
+
+        .card {
+
+            position: relative;
+            z-index: 2;
+
+            width: min(92%, 760px);
+
+            background: rgba(20, 20, 24, .65);
+
+            backdrop-filter: blur(16px);
+
+            border: 1px solid rgba(255, 255, 255, .08);
+
+            border-radius: 28px;
+
+            padding: 60px;
+
+            text-align: center;
+
+            box-shadow: 0 25px 80px rgba(0, 0, 0, .6),
+            inset 0 0 0 1px rgba(255, 255, 255, .03);
+
+            animation: fade 1s ease;
+        }
+
+        @keyframes fade {
+
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+
+        }
+
+        .status {
+
+            font-size: 140px;
+            font-weight: 900;
+
+            background: linear-gradient(90deg, #6d5cff, #00d4ff, #ff3cac);
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+
+            line-height: 1;
+
+            animation: pulse 3s infinite;
+
+        }
+
+        @keyframes pulse {
+
+            50% {
+                transform: scale(1.03);
+            }
+
+        }
+
+        .title {
+
+            margin-top: 20px;
+            font-size: 38px;
+            font-weight: 700;
+
+        }
+
+        .desc {
+
+            margin-top: 18px;
+            font-size: 18px;
+            line-height: 1.8;
+            color: #b5b5b5;
+
+        }
+
+        .quote {
+
+            margin-top: 25px;
+
+            font-style: italic;
+
+            color: #8fdcff;
+
+            font-size: 15px;
+
+        }
+
+        .buttons {
+
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-top: 45px;
+            flex-wrap: wrap;
+
+        }
+
+        button {
+
+            padding: 15px 34px;
+            font-size: 16px;
+
+            border: none;
+
+            border-radius: 14px;
+
+            cursor: pointer;
+
+            transition: .35s;
+
+            font-weight: 600;
+
+        }
+
+        .primary {
+
+            background: linear-gradient(135deg, #6c5cff, #00c2ff);
+
+            color: white;
+
+        }
+
+        .primary:hover {
+
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 200, 255, .35);
+
+        }
+
+        .orbit {
+
+            position: absolute;
+
+            width: 520px;
+            height: 520px;
+
+            border-radius: 50%;
+
+            border: 1px solid rgba(255, 255, 255, .04);
+
+            animation: spin 30s linear infinite;
+
+        }
+
+        .orbit::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 10px;
+            height: 10px;
+
+            background: #00d4ff;
+
+            border-radius: 50%;
+
+            top: -5px;
+            left: 50%;
+
+            box-shadow: 0 0 20px cyan;
+
+        }
+
+        @keyframes spin {
+
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .status {
+                font-size: 90px;
+            }
+
+            .title {
+                font-size: 28px;
+            }
+
+            .card {
+                padding: 40px 25px;
+            }
+
+            .desc {
+                font-size: 16px;
+            }
+
+            .orbit {
+                display: none;
+            }
+
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="bg">
+    <div class="blob"></div>
+    <div class="blob"></div>
+    <div class="blob"></div>
+</div>
+
+<div class="orbit"></div>
+
+<div class="card">
+
+    <div class="status" id="status">ERROR</div>
+
+    <h1 class="title" id="title">Something went wrong</h1>
+
+    <p class="desc" id="description">
+        The server encountered an unexpected situation while processing your request.
+        The requested resource may be unavailable, restricted, or temporarily offline.
+    </p>
+
+    <div class="quote" id="quote"></div>
+
+    <div class="buttons">
+
+        <button class="primary" onclick="goHome()">
+            🏠 Return Home
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+    const errors = {
+
+        400: {
+            title: "Bad Request",
+            description: "The request couldn't be understood because it was malformed or invalid."
+        },
+
+        401: {
+            title: "Unauthorized",
+            description: "Authentication is required before this resource can be accessed."
+        },
+
+        403: {
+            title: "Forbidden",
+            description: "You don't have permission to access this resource."
+        },
+
+        404: {
+            title: "Page Not Found",
+            description: "The page you're looking for doesn't exist or has been moved."
+        },
+
+        405: {
+            title: "Method Not Allowed",
+            description: "The requested HTTP method isn't supported for this resource."
+        },
+
+        408: {
+            title: "Request Timeout",
+            description: "The server waited too long for the request."
+        },
+
+        409: {
+            title: "Conflict",
+            description: "The request conflicts with the current state of the resource."
+        },
+
+        410: {
+            title: "Gone",
+            description: "The requested resource is no longer available."
+        },
+
+        429: {
+            title: "Too Many Requests",
+            description: "Too many requests were received. Please slow down."
+        },
+
+        500: {
+            title: "Internal Server Error",
+            description: "An unexpected server error occurred while processing your request."
+        },
+
+        501: {
+            title: "Not Implemented",
+            description: "The requested functionality isn't supported."
+        },
+
+        502: {
+            title: "Bad Gateway",
+            description: "An invalid response was received from an upstream server."
+        },
+
+        503: {
+            title: "Service Unavailable",
+            description: "The service is temporarily unavailable due to maintenance or overload."
+        },
+
+        504: {
+            title: "Gateway Timeout",
+            description: "The upstream server took too long to respond."
+        }
+
+    };
+
+    const quotes = [
+
+        "Every error is a step closer to success.",
+
+        "Systems fail. Great systems recover.",
+
+        "Even the internet needs a break sometimes.",
+
+        "Unexpected doesn't mean impossible.",
+
+        "Take a breath. Try again.",
+
+        "Technology isn't perfect—and that's okay.",
+
+        "Errors are proof that something is happening."
+
+    ];
+
+    function getCode() {
+
+        const params = new URLSearchParams(location.search);
+
+        return params.get("code") || "ERROR";
+
+    }
+
+    const code = getCode();
+
+    document.getElementById("status").textContent = code;
+
+    if (errors[code]) {
+
+        document.getElementById("title").textContent = errors[code].title;
+        document.getElementById("description").textContent = errors[code].description;
+
+    } else {
+
+        document.getElementById("title").textContent = "HTTP Error";
+        document.getElementById("description").textContent = "The request couldn't be completed. An HTTP error occurred while processing your request.";
+
+    }
+
+    document.getElementById("quote").textContent =
+        quotes[Math.floor(Math.random() * quotes.length)];
+
+    function goHome() {
+
+        location.href = "/";
+
+    }
+
+    function reloadPage() {
+
+        location.reload();
+
+    }
+
+</script>
+
+</body>
+</html>

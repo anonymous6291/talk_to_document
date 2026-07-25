@@ -4,13 +4,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 @Service
 public class TextChunker {
-    private static final int CHUNK_SIZE = 400;
-    private static final int OVERLAP = 150;
-    private static final Pattern END_OF_LINE_PATTERN = Pattern.compile("[.?!]");
+    private static final int CHUNK_SIZE = 512;
+    private static final int OVERLAP = 100;
     private final int chunkSize;
     private final int overlap;
 

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import talktodocuments.talk_to_documents.login.UserManager;
+import talktodocuments.talk_to_documents.database.data.user.UserManager;
 
 import java.util.List;
 

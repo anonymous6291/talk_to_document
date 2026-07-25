@@ -16,7 +16,6 @@ import java.util.List;
 @Service
 public class QdrantDatabase {
     private static final int VECTOR_SIZE = 768;
-    private static final int QUERY_RESPONSE_LIMIT = 5;
     private static final boolean QUERY_RESPONSE_WITH_VECTOR = false;
     private static final boolean QUERY_RESPONSE_WITH_PAYLOAD = true;
     private static final String SIMILARITY_MATCHING_METHOD = "Cosine";
@@ -71,22 +70,17 @@ public class QdrantDatabase {
         String url = BASE_URL + collectionName + ADD_POINT_URL_EXTENSION;
         HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(url)).header("Content-Type", "application/json").PUT(HttpRequest.BodyPublishers.ofString(chunkDataString)).build();
         HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        IO.println(httpResponse.body());
-        IO.println(httpResponse);
-        IO.println(httpResponse.statusCode());
         return httpResponse.statusCode() == 200;
     }
 
-    public List<Chunk> searchInAll(String collectionName, float[] vector, String payloadFieldName, List<String> matchValues) throws Exception {
+    public List<Chunk> searchInAll(String collectionName, float[] vector, String payloadFieldName, List<String> matchValues, int queryResponseLimit) throws Exception {
         Must must = new Must(payloadFieldName, new QueryMatch(matchValues));
         QueryFilter queryFilter = new QueryFilter(List.of(must));
-        QueryData queryData = new QueryData(vector, QUERY_RESPONSE_LIMIT, QUERY_RESPONSE_WITH_PAYLOAD, QUERY_RESPONSE_WITH_VECTOR, queryFilter);
+        QueryData queryData = new QueryData(vector, queryResponseLimit, QUERY_RESPONSE_WITH_PAYLOAD, QUERY_RESPONSE_WITH_VECTOR, queryFilter);
         String shouldQueryDataString = jsonParser.writeValueAsString(queryData);
-        IO.println(shouldQueryDataString);
         String url = BASE_URL + collectionName + QUERY_POINT_URL_EXTENSION;
         HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(url)).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(shouldQueryDataString)).build();
         HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        IO.println(httpResponse.body());
         QueryResponseResult queryResponseResult = jsonParser.readValue(httpResponse.body(), QueryResponse.class).result();
         return queryResponseResult.points();
     }

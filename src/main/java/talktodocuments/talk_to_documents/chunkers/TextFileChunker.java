@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public class TextFileChunker implements Chunker {
     @Getter
-    private final List<String> supportedFileFormats = List.of("txt", "log", "");
+    private final List<String> supportedFileFormats = List.of("txt", "log", "java", "py", "js", "c", "cpp", "");
     private final TextChunker textChunker;
 
     public TextFileChunker(TextChunker textChunker, Chunkers chunkers) {

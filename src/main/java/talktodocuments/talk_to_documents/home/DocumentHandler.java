@@ -62,36 +62,24 @@ public class DocumentHandler {
             return null;
         }
         String originalFileName = Path.of(fileName).getFileName().toString();
-        if (originalFileName.indexOf('.') == -1) {
-            return null;
-        }
-        IO.println(fileName + ":filename");
-        String extension = originalFileName.substring(originalFileName.indexOf('.') + 1);
         String documentId = UUID.randomUUID().toString().concat(Integer.toString(documentNumber.incrementAndGet()));
         Path targetFilePath = localDocumentStorage.getLocalDocumentStoragePath(userId, documentId);
         Files.createDirectories(targetFilePath.getParent());
         file.transferTo(targetFilePath);
-        List<String> textChunks = chunkers.getChunks(targetFilePath.toFile(), extension);
-        IO.println(textChunks);
+        List<String> textChunks = chunkers.getChunks(targetFilePath.toFile(), originalFileName);
         int numberOfChunks = textChunks.size();
         List<float[]> embeddings = embedder.getEmbeddings(textChunks);
         List<String> chunkIds = generateChunkIds(documentId, numberOfChunks);
         List<Chunk> chunks = new ArrayList<>();
-        IO.println("1");
         for (int i = 0; i < numberOfChunks; i++) {
             String chunkId = chunkIds.get(i);
             chunks.add(new Chunk(chunkId, embeddings.get(i), new ChunkPayload(textChunks.get(i), documentId)));
             removableChunkService.addRemovableChunk(userId, chunkId);
         }
-        IO.println("2");
         qdrantDatabase.addChunks(userId, chunks);
-        IO.println("3");
         documentChunkService.addAllChunksForDocumentId(userId, documentId, chunkIds);
-        IO.println("4");
         DocumentData documentData = documentDataService.addDocumentDataForUserId(userId, originalFileName, documentId, section);
-        IO.println("5");
         chunkIds.forEach(removableChunkService::deleteRemovableChunk);
-        IO.println("6");
         return new JSONDocumentData(originalFileName, documentId, section, documentData.getCreationDateTime());
     }
 

@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Welcome Back</title>
+    <link href="/images/rag_icon.png" rel="icon" type="image/png">
 
     <style>
         * {
@@ -178,29 +179,10 @@
             transform: translateY(-2px);
         }
 
-        .bottom {
-            margin-top: 18px;
-            text-align: center;
-            color: #356859;
-            font-size: 14px;
-        }
-
         .bottom a {
             color: #235347;
             text-decoration: none;
             font-weight: 600;
-        }
-
-        /* Sparkles */
-
-        .sparkle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: white;
-            animation: float 8s linear infinite;
-            opacity: .7;
         }
 
         @keyframes float {
@@ -317,7 +299,7 @@
 
     <svg viewBox="0 0 120 120">
 
-        <g fill="none" stroke="#333" stroke-width="4" stroke-linecap="round">
+        <g fill="none" stroke="#333" stroke-linecap="round" stroke-width="4">
 
             <path class="leftWing" d="M60 60 C40 30 15 25 5 45"/>
 
@@ -341,11 +323,11 @@
             <p id="message"></p>
         </div>
         <div class="input-box">
-            <input type="email" id="email" name="email" placeholder="Email" required>
+            <input id="email" name="email" placeholder="Email" required type="email">
         </div>
 
         <div class="input-box">
-            <input type="password" id="password" name="password" placeholder="Password" required>
+            <input id="password" name="password" placeholder="Password" required type="password">
             <span class="toggle" id="show-hide-password" onclick="togglePassword()">👁</span>
         </div>
         <button type="submit">Login</button>
@@ -424,7 +406,7 @@
                     if (response.redirected) {
                         window.location.href = response.url;
                     }
-                }, 1500);
+                }, 500);
             } else {
                 messageField.textContent = "Invalid email or password.";
                 messageField.style.color = "red";

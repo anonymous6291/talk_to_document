@@ -9,46 +9,39 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import talktodocuments.talk_to_documents.database.data.user.Session;
-import talktodocuments.talk_to_documents.database.data.user.SessionService;
-import talktodocuments.talk_to_documents.database.data.user.UserService;
-import talktodocuments.talk_to_documents.database.embedding.QdrantDatabase;
+import talktodocuments.talk_to_documents.database.data.user.UserManager;
 
 import java.time.Duration;
 import java.time.Instant;
 
 @Controller
 public class Login {
-    private final UserService userService;
-    private final QdrantDatabase qdrantDatabase;
-    private final SessionService sessionService;
+    private final UserManager userManager;
 
-    public Login(UserService userService, QdrantDatabase qdrantDatabase, SessionService sessionService) {
-        this.userService = userService;
-        this.qdrantDatabase = qdrantDatabase;
-        this.sessionService = sessionService;
+    public Login(UserManager userManager) {
+        this.userManager = userManager;
     }
 
     @GetMapping({"/", "/login"})
-    public String loginPage(@CookieValue(name = "email", required = false) String emailId, @CookieValue(name = "sessionId", required = false) String sessionId) throws Exception {
-        if (emailId != null && sessionId != null && sessionService.isValidSession(emailId, sessionId)) {
+    public String loginPage(@CookieValue(name = "email", required = false) String emailId, @CookieValue(name = "sessionId", required = false) String sessionId) {
+        if (userManager.isValidSession(emailId, sessionId)) {
             return "forward:/home";
         }
-        //userService.addUser("1@gmail.com", "12345");
-        //qdrantDatabase.addCollection("1@gmail.com");
+        //userManager.addUser("1@gmail.com", "12345");
         return "login.html";
     }
 
     @PostMapping({"/", "/login"})
-    public void doLogin(@RequestParam(name = "email", required = false) String email, @RequestParam(name = "password", required = false) String password, HttpServletResponse httpServletResponse) throws Exception {
-        if (email == null || password == null || !userService.validateUserPassword(email, password)) {
+    public void doLogin(@RequestParam(name = "email", required = false) String emailId, @RequestParam(name = "password", required = false) String password, HttpServletResponse httpServletResponse) throws Exception {
+        Session session = userManager.validateUserAndCreateNewSession(emailId, password);
+        if (session == null) {
             httpServletResponse.sendError(HttpStatus.NOT_FOUND.value(), "Invalid email or password.");
             return;
         }
-        Session session = sessionService.createNewSession(email);
         Instant expiry = session.getExpiry();
         Instant now = Instant.now();
         int cookieAge = (int) Math.min(Integer.MAX_VALUE, Math.abs(Duration.between(now, expiry).getSeconds()));
-        Cookie emailCookie = new Cookie("email", email);
+        Cookie emailCookie = new Cookie("email", emailId);
         emailCookie.setMaxAge(cookieAge);
         Cookie sessionCookie = new Cookie("sessionId", session.getSessionId());
         sessionCookie.setMaxAge(cookieAge);

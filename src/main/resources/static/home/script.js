@@ -3,6 +3,13 @@ const chatMessages = document.getElementById("chatMessages");
 const sendBtn = document.getElementById("sendBtn");
 const queryInput = document.getElementById("queryInput");
 
+sendBtn.onclick = () => {
+    sendBtn.disabled = true;
+    sendQuery().then(() => {
+        sendBtn.disabled = false;
+    });
+};
+
 window.onload = async () => {
     await loadDocuments();
 };
@@ -42,7 +49,6 @@ function renderDocuments() {
         if (!grouped[doc.section])
             grouped[doc.section] = [];
 
-        doc.selected = false;
         grouped[doc.section].push(doc);
     });
 
@@ -83,8 +89,98 @@ function renderDocuments() {
         const action = document.createElement("div");
         action.className = "section-actions";
 
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Delete";
+        const deleteBtn = document.createElement("div");
+        deleteBtn.className = "document-delete-button";
+        deleteBtn.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg"
+              width="50"
+     height="50"
+     viewBox="0 0 50 50"
+     fill="none">
+
+  <defs>
+    <!-- Cosmic Gradient -->
+    <linearGradient id="trashGradient" x1="12" y1="40" x2="38" y2="10">
+      <stop offset="0%" stop-color="#22D3EE"/>
+      <stop offset="50%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#EC4899"/>
+    </linearGradient>
+
+    <!-- Nebula -->
+    <radialGradient id="nebula" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#A855F7" stop-opacity=".25"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Glow -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Nebula -->
+  <circle cx="25" cy="25" r="22" fill="url(#nebula)"/>
+
+  <!-- Trash Can -->
+  <g filter="url(#glow)">
+    <!-- Lid -->
+    <rect x="15" y="13"
+          width="20"
+          height="4"
+          rx="2"
+          fill="url(#trashGradient)"/>
+
+    <!-- Handle -->
+    <rect x="21" y="9"
+          width="8"
+          height="3"
+          rx="1.5"
+          fill="#F8FAFC"/>
+
+    <!-- Body -->
+    <rect x="17"
+          y="17"
+          width="16"
+          height="21"
+          rx="3"
+          fill="url(#trashGradient)"
+          stroke="#F8FAFC"
+          stroke-width="1.3"/>
+
+    <!-- Inner Lines -->
+    <line x1="22" y1="21" x2="22" y2="34"
+          stroke="#F8FAFC"
+          stroke-width="1.5"
+          stroke-linecap="round"/>
+
+    <line x1="25" y1="21" x2="25" y2="34"
+          stroke="#F8FAFC"
+          stroke-width="1.5"
+          stroke-linecap="round"/>
+
+    <line x1="28" y1="21" x2="28" y2="34"
+          stroke="#F8FAFC"
+          stroke-width="1.5"
+          stroke-linecap="round"/>
+  </g>
+
+  <!-- Tiny Cosmic Sparkles -->
+  <g fill="#FDE68A">
+    <circle cx="11" cy="13" r="1"/>
+    <circle cx="39" cy="14" r=".8"/>
+    <circle cx="12" cy="36" r=".8"/>
+    <circle cx="38" cy="35" r=".8"/>
+
+    <path d="M40 25l.5 1.4.5-1.4 1.4-.5-1.4-.5-.5-1.4-.5 1.4-1.4.5z"/>
+    <path d="M10 24l.5 1.4.5-1.4 1.4-.5-1.4-.5-.5-1.4-.5 1.4-1.4.5z"/>
+  </g>
+
+</svg>
+        `;
 
         action.appendChild(deleteBtn);
 
@@ -176,6 +272,7 @@ function renderDocuments() {
             //--------------------------------------------------
 
             const cb = document.createElement("input");
+            cb.checked = doc.selected;
             cb.type = "checkbox";
             cb.id = "doc-" + doc.documentId;
 
@@ -214,9 +311,96 @@ function renderDocuments() {
             // Delete
             //--------------------------------------------------
 
-            const del = document.createElement("button");
+            const del = document.createElement("div");
             del.className = "document-delete-button";
-            del.textContent = "Delete";
+            del.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg"
+     width="50"
+     height="50"
+     viewBox="0 0 50 50"
+     fill="none">
+
+  <defs>
+    <!-- Cosmic Gradient -->
+    <linearGradient id="trashGradient" x1="12" y1="40" x2="38" y2="10">
+      <stop offset="0%" stop-color="#22D3EE"/>
+      <stop offset="50%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#EC4899"/>
+    </linearGradient>
+
+    <!-- Nebula -->
+    <radialGradient id="nebula" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#A855F7" stop-opacity=".25"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Glow -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Nebula -->
+  <circle cx="25" cy="25" r="22" fill="url(#nebula)"/>
+
+  <!-- Trash Can -->
+  <g filter="url(#glow)">
+    <!-- Lid -->
+    <rect x="15" y="13"
+          width="20"
+          height="4"
+          rx="2"
+          fill="url(#trashGradient)"/>
+
+    <!-- Handle -->
+    <rect x="21" y="9"
+          width="8"
+          height="3"
+          rx="1.5"
+          fill="#F8FAFC"/>
+
+    <!-- Body -->
+    <rect x="17"
+          y="17"
+          width="16"
+          height="21"
+          rx="3"
+          fill="url(#trashGradient)"
+          stroke="#F8FAFC"
+          stroke-width="1.3"/>
+
+    <!-- Inner Lines -->
+    <line x1="22" y1="21" x2="22" y2="34"
+          stroke="#F8FAFC"
+          stroke-width="1.5"
+          stroke-linecap="round"/>
+
+    <line x1="25" y1="21" x2="25" y2="34"
+          stroke="#F8FAFC"
+          stroke-width="1.5"
+          stroke-linecap="round"/>
+
+                                  <line x1="28" y1="21" x2="28" y2="34"
+                                        stroke="#F8FAFC"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"/>
+                                </g>
+
+                                <!-- Tiny Cosmic Sparkles -->
+                                <g fill="#FDE68A">
+                                  <circle cx="11" cy="13" r="1"/>
+                                  <circle cx="39" cy="14" r=".8"/>
+                                  <circle cx="12" cy="36" r=".8"/>
+                                  <circle cx="38" cy="35" r=".8"/>
+
+                                  <path d="M40 25l.5 1.4.5-1.4 1.4-.5-1.4-.5-.5-1.4-.5 1.4-1.4.5z"/>
+                                  <path d="M10 24l.5 1.4.5-1.4 1.4-.5-1.4-.5-.5-1.4-.5 1.4-1.4.5z"/>
+                                </g>
+
+                              </svg>`;
 
             del.addEventListener("click", (e) => {
 
@@ -245,6 +429,11 @@ function renderDocuments() {
         section.appendChild(list);
 
         container.appendChild(section);
+
+        updateSectionCheckbox(
+            checkbox,
+            docs
+        );
 
     });
 }
@@ -304,6 +493,7 @@ function getUnselectedDocuments() {
 
 
 function addDocument(documentData) {
+    documentData.selected = true;
     documents.unshift(documentData);
 }
 
@@ -331,6 +521,10 @@ async function loadDocuments() {
 }
 
 function openDeleteModal() {
+
+    if (documentsToDelete.length === 0) {
+        return;
+    }
 
     const list = document.getElementById("deleteDocumentList");
     list.innerHTML = "";
@@ -442,13 +636,7 @@ function addLoading() {
 
     div.className = "message bot";
 
-    div.innerHTML = `
-
-        <div class="loading">
-           <p>Querying....</p>
-        </div>
-
-    `;
+    div.textContent = "Querying....";
 
     chatMessages.appendChild(div);
 
@@ -457,8 +645,6 @@ function addLoading() {
     return div;
 
 }
-
-sendBtn.onclick = sendQuery;
 
 queryInput.addEventListener("keydown", (e) => {
 
@@ -502,9 +688,10 @@ async function sendQuery() {
 
     const loading = addLoading();
 
-    const selectedDocIds = getSelectedDocuments().map(d => d.documentId);
-
     try {
+
+        const selectedDocIds = getSelectedDocuments().map(d => d.documentId);
+
         console.log(selectedDocIds)
 
         const response = await fetch("/query", {
@@ -539,7 +726,6 @@ async function sendQuery() {
 
         console.log(e)
     }
-
 }
 
 
@@ -590,25 +776,27 @@ uploadBtn.addEventListener("click", async () => {
         return;
     }
 
-    const sectionName = document.getElementById("section-name").value;
-
-    if (sectionName.trim() === "") {
-        document.getElementById("showSectionStatus").innerHTML = `
-            <p style="color: red">Invalid section name!</p>
-            `;
-        return;
-    }
-
-    document.getElementById("showSectionStatus").innerHTML = "";
-
-    const formData = new FormData();
-
-    // Add every file
-    selectedFiles.forEach(file => {
-        formData.append("files", file);
-    });
+    uploadBtn.disabled = true;
 
     try {
+
+        const sectionName = document.getElementById("section-name").value;
+
+        if (sectionName.trim() === "") {
+            document.getElementById("showSectionStatus").innerHTML = `
+            <p style="color: red">Invalid section name!</p>
+            `;
+            return;
+        }
+
+        document.getElementById("showSectionStatus").innerHTML = "";
+
+        const formData = new FormData();
+
+        // Add every file
+        selectedFiles.forEach(file => {
+            formData.append("files", file);
+        });
 
         status.style.color = "blue";
         status.textContent = "Uploading...";
@@ -639,6 +827,8 @@ uploadBtn.addEventListener("click", async () => {
         status.style.color = "red";
         status.textContent = "Upload failed.";
     }
+
+    uploadBtn.disabled = false;
 });
 
 // Cancel
