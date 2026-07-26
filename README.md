@@ -358,6 +358,6 @@ http://localhost:8080
 
 # License
 
-This project is licensed under the Apache License 2.0.
+This project is licensed under the MIT License.
 
 See the `LICENSE` file for details.
